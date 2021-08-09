@@ -66,7 +66,7 @@ No difference.
 
 ### 2.15 Does this specification have a "Security Considerations" and "Privacy Considerations" section? 
 
-Yes: https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/EyeDropper/explainer.md#privacy
+Yes: https://github.com/WICG/eyedropper-api#privacy
 
 ### 2.16 Does this specification allow downgrading default security characteristics? 
 
