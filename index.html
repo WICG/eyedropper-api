@@ -2,37 +2,199 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Spec proposal</title>
+    <title>EyeDropper API</title>
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
     <script class='remove'>
-      // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
       var respecConfig = {
         specStatus: "CG-DRAFT",
         shortName: "eyedropper-api",
         editors: [{
-          name: "Travis Leithead"
-        }]
+          name: "Ionel Popescu",
+          mailto: "iopopesc@microsoft.com",
+          company: "Microsoft Corporation",
+          companyURL:  "https://www.microsoft.com/"
+        }],
+        group: "wicg",
+        github: "https://github.com/wicg/eyedropper-api",
+        xref: "web-platform",
       };
     </script>
   </head>
   <body>
     <section id="abstract">
       <p>
-        This specification does neat stuff.
+        This document describes an API providing access to a browser supplied eyedropper.
       </p>
     </section>
-    <section id="sotd">
-      <p>
-        This is an unofficial proposal.
-      </p>
-    </section>
-
-    <section id="introduction">
+    <section id="sotd"></section>
+    <section class="informative" id="introduction">
       <h2>Introduction</h2>
       <p>
-        See <a href="https://github.com/w3c/respec/wiki/User's-Guide">ReSpec's user guide</a>
-        for how toget started!
+        Currently on the web, creative application developers are unable to implement an eyedropper,
+        a tool that allows users to select a color from the pixels on their screen, including the pixels
+        rendered outside of the web page requesting the color data.
+
+        <p>
+          This API enables authors to use a browser supplied eyedropper in the construction of custom color pickers.
+        </p>
       </p>
     </section>
+    <section id="conformance"></section>
+    <section>
+      <h2>API Description</h2>
+
+      <section data-dfn-for="ColorSelectionResult">
+        <h3>ColorSelectionResult dictionary</h3>
+        <pre class="idl">
+          dictionary ColorSelectionResult {
+            DOMString sRGBHex;
+          };
+        </pre>
+        <dl>
+          <dt><dfn data-dfn-for="ColorSelectionResult">sRGBHex</dfn></dt>
+          <dd>
+            must have a value that is a <dfn data-cite="!HTML#valid-simple-colour">valid simple color</dfn>
+          </dd>
+        </dl>
+      </section>
+
+      <section data-dfn-for="EyeDropper">
+        <h3>EyeDropper interface</h3>
+        <pre class="idl">
+            [Exposed=Window]
+            interface EyeDropper {
+                constructor();
+                Promise&lt;ColorSelectionResult> open();
+            };
+        </pre>
+        <dl>
+          <dt><dfn data-dfn-for="EyeDropper">open()</dfn></dt>
+          <dd>
+            The method must follow these steps:
+            <ol>
+              <li>
+                If the [=relevant global object=] of [=this=] does not have [=transient
+    activation=], return [=a new promise=] [=rejected=] with a "{{NotAllowedError}}"
+    {{DOMException}}.
+              </li>
+              <li>
+                If another eye dropper is already open then return [=a new promise=] [=rejected=] with an "{{InvalidStateError}}"
+                {{DOMException}}.
+              </li>
+              <li>
+                Place the web page into an "eyedropper mode" where user input is suppressed: no UI events are dispatched to the web page.
+              </li>
+              <li>
+                Let |result| be [=a new promise=].
+              </li>
+              <li>
+                [=In parallel=]:
+                <ol>
+                    <li>Let |colorSelectionResult| be the result of the user succesfully selecting a color. If this fails, then:
+                      <ol>
+                        <li>
+                          If the user aborts the selection, [=reject=] |result| with an "{{AbortError}}" {{DOMException}}, otherwise
+                          [=reject=] |result| with an "{{InvalidStateError}}" {{DOMException}}.
+                        </li>
+                        <li>
+                          Abort these steps.
+                        </li>
+                      </ol>
+                    </li>
+                    <li>[=Resolve=] |result| with |colorSelectionResult|.</li>
+                </ol>
+               </li>
+               <li>
+                Return |result|.
+               </li>
+            </ol>
+          </dd>
+        </dl>
+    </section>
+  </section>
+  <section>
+    <h2>EyeDropper</h2>
+    <p>
+      To {{EyeDropper/open}} an eyedropper, the user agent MUST present an user interface that follows these rules:
+        <ul>
+          <li>
+            If presenting an user interface fails or accessing screen content fails, then return failure.
+          </li>
+          <li>
+            The UI MUST ensure that it was visible before allowing a color selection.
+          </li>
+          <li>
+            The UI MUST make it clear which color is going to be selected.
+          </li>
+          <li>
+            The UI MUST provide an option to cancel/return without selecting a color.
+          </li>
+        </ul>
+    </p>
+  </section>
+  <section class="informative" id="privacy">
+    <h2>Security and Privacy Considerations</h2>
+    <p>
+      Exposing endpoints allowing developers to access unrestricted pixel data from a user's machine presents security challenges.
+      In particular any eyedropper implementation should not allow a web page to "screen scrape" information the user didn't intend
+      to share with the web application, for example, while the user moves the mouse around the screen.
+      <p>
+        One way to mitigate this threat is to require that pixel data only be made available to the web application when the user takes
+        some explicit action like pressing a mouse button.
+      </p>
+      <p>
+        Additionally, browsers should provide a clear indication as to when the user has been transitioned into an eyedropper mode,
+        for example by changing the cursor, and provide the means for the user to exit that mode, for example,
+        by pressing an ESC key and not allowing the behavior to be cancelled by the author.
+      </p>
+      <p>
+        The transition into eyedropper mode should require consumable user activation, for example, clicking on a button from the web page,
+        to help avoid unintentionally revealing pixel data.
+      </p>
+    </p>
+  </section>
+  <section class="informative" id="examples">
+    <h2>Examples</h2>
+      <section>
+        <h3>Platform support</h3>
+        <aside class="example">
+          <pre>
+            <xmp>
+              if (window.EyeDropper == undefined) {
+                console.error('EyeDropper API is not supported on this platform');
+              }
+            </xmp>
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h3>Selecting a color</h3>
+        <aside class="example">
+          <pre>
+            <xmp>
+              <button id="eyedropperButton">Open eyedropper</button>
+              <script>
+                // Create an EyeDropper object
+                let eyeDropper = new EyeDropper();
+
+                document.getElementbyId("eyedropperButton").addEventListener('click', e => {
+                    // Enter eyedropper mode
+                    eyeDropper.open()
+                    .then(colorSelectionResult => {
+                        // returns hex color value (#RRGGBB) of the selected pixel
+                        console.log(colorSelectionResult.sRGBHex);
+                    })
+                    .catch(error => {
+                        // handle the user choosing to exit eyedropper mode without a selection
+                    });
+                });
+              </script>
+            </xmp>
+          </pre>
+        </aside>
+      </section>
+  </section>
+  <section id="idl-index" class="appendix"></section>
+  <section id="references" class="appendix"></section>
   </body>
 </html>
