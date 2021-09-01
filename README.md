@@ -71,7 +71,7 @@ If the user presses ESC or invokes some other affordance for exiting "eyedropper
 let eyeDropper = new EyeDropper();
 
 // Enter eyedropper mode
-let icon = document.getElementbyId("eyeDropperIcon")
+let icon = document.getElementById("eyeDropperIcon")
 icon.addEventListener('click', e => {
     eyeDropper.open()
     .then(colorSelectionResult => {

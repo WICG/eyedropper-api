@@ -182,7 +182,7 @@
                 // Create an EyeDropper object
                 let eyeDropper = new EyeDropper();
 
-                document.getElementbyId("eyedropperButton").addEventListener('click', e => {
+                document.getElementById("eyedropperButton").addEventListener('click', e => {
                     // Enter eyedropper mode
                     eyeDropper.open()
                     .then(colorSelectionResult => {
