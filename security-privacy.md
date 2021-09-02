@@ -4,11 +4,9 @@ The following document contains answers to the [Self-Review Security and Privacy
 
 ### 2.1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary? 
 
-The API will enable web developers to incorporate an eyedropper in their web applications. The eyedropper would allow the developer to access the hex value (of the form #RRGGBB) of a user specified pixel, its position and modifier keys pressed when the pixel was selected. 
+The API will enable web developers to incorporate an eyedropper in their web applications. The eyedropper would allow the developer to access the hex value (of the form #RRGGBB) of a user specified pixel.
 
-The position of the selected color is included to facilitate scenarios where a web app using the eyedropper samples a pixel color from its own document. The web app could, for example, include an alpha channel for the selected pixel or create a palette of colors associated with a pixel's location based on layer information known to the web app. The color value would otherwise be the final composited color as seen by the user. 
-
-Note that the eyedropper only provides pixels back to the web app when the user is explicitly instructing it to capture one, for example, by clicking a mouse button.  Simply moving the eyedropper around the screen does not “screen scrape” information and make it available to the web app. 
+Note that the eyedropper only provides pixels back to the web app when the user is explicitly instructing it to capture one, for example, by clicking a mouse button. Simply moving the eyedropper around the screen does not “screen scrape” information and make it available to the web app.
 
 ### 2.2 Is this specification exposing the minimum amount of information necessary to power the feature? 
 
@@ -36,7 +34,7 @@ No.
 
 ### 2.8 What data does this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts. 
 
-As noted above, it exposes information about the hex value (of the form #RRGGBB) of a user specified pixel, its position and modifier keys pressed when the pixel was selected.
+As noted above, it exposes information about the hex value (of the form #RRGGBB) of a user specified pixel.
 
 ### 2.9 Does this specification enable new script execution/loading mechanisms? 
 
