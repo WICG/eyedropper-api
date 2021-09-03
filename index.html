@@ -58,13 +58,28 @@
         </dl>
       </section>
 
+      <section data-dfn-for="ColorSelectionOptions">
+        <h3>ColorSelectionOptions dictionary</h3>
+        <pre class="idl">
+          dictionary ColorSelectionOptions {
+            AbortSignal signal;
+          };
+        </pre>
+        <dl>
+          <dt><dfn data-dfn-for="ColorSelectionOptions">signal</dfn></dt>
+          <dd>
+            allows to abort the {{EyeDropper/open}} operation.
+          </dd>
+        </dl>
+      </section>
+
       <section data-dfn-for="EyeDropper">
         <h3>EyeDropper interface</h3>
         <pre class="idl">
             [Exposed=Window]
             interface EyeDropper {
                 constructor();
-                Promise&lt;ColorSelectionResult> open();
+                Promise&lt;ColorSelectionResult> open(optional ColorSelectionOptions options = {});
             };
         </pre>
         <dl>
@@ -82,10 +97,26 @@
                 {{DOMException}}.
               </li>
               <li>
-                Place the web page into an "eyedropper mode" where user input is suppressed: no UI events are dispatched to the web page.
+                Let |result| be [=a new promise=].
               </li>
               <li>
-                Let |result| be [=a new promise=].
+                If options.<dfn data-cite="!dom#abortsignal">signal</dfn> is present, then perform the following sub-steps:
+                <ol>
+                  <li>
+                    If options.[=signal=]'s <dfn data-cite="!dom#abortsignal-aborted-flag">aborted flag</dfn>
+                    is set, then [=reject=] |result| with an "{{AbortError}}" {{DOMException}} and return |result|.
+                  </li>
+                  <li>
+                    <dfn data-cite="!dom#abortsignal-add">Add the following abort steps</dfn> to options.[=signal=]:
+                    <ol>
+                      <li>Exit "eyedropper mode" and dismiss UI.</li>
+                      <li>[=Reject=] |result| with an "{{AbortError}}" {{DOMException}}</li>
+                    </ol>
+                  </li>
+                </ol>
+              </li>
+              <li>
+                Place the web page into an "eyedropper mode" where user input is suppressed: no UI events are dispatched to the web page.
               </li>
               <li>
                 [=In parallel=]:

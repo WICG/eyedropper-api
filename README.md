@@ -48,12 +48,17 @@ Since the representation of color on the web is in transition and the [Color on 
 dictionary ColorSelectionResult {
     DOMString sRGBHex;
 };
+
+dictionary ColorSelectionOptions {
+    AbortSignal signal;
+}
  
 [Exposed=Window]
 interface EyeDropper {
     constructor();
  
-    Promise<ColorSelectionResult> open();
+    Promise<ColorSelectionResult> open(
+        optional ColorSelectionOptions options = {});
 };
 ```
 
