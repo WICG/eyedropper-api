@@ -76,7 +76,7 @@
       <section data-dfn-for="EyeDropper">
         <h3>EyeDropper interface</h3>
         <pre class="idl">
-            [Exposed=Window]
+            [Exposed=Window, SecureContext]
             interface EyeDropper {
                 constructor();
                 Promise&lt;ColorSelectionResult> open(optional ColorSelectionOptions options = {});
