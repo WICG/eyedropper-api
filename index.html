@@ -103,14 +103,15 @@
                 If options.<dfn data-cite="!dom#abortsignal">signal</dfn> is present, then perform the following sub-steps:
                 <ol>
                   <li>
-                    If options.[=signal=]'s <dfn data-cite="!dom#abortsignal-aborted-flag">aborted flag</dfn>
-                    is set, then [=reject=] |result| with an "{{AbortError}}" {{DOMException}} and return |result|.
+                    If options.[=signal=] is <dfn data-cite="!dom#dom-abortsignal-aborted">aborted</dfn>,
+                    then [=reject=] |result| with options.[=signal=]'s <dfn data-cite="!dom#abortsignal-abort-reason">abort reason</dfn>
+                    and return |result|.
                   </li>
                   <li>
                     <dfn data-cite="!dom#abortsignal-add">Add the following abort steps</dfn> to options.[=signal=]:
                     <ol>
                       <li>Exit "eyedropper mode" and dismiss UI.</li>
-                      <li>[=Reject=] |result| with an "{{AbortError}}" {{DOMException}}</li>
+                      <li>[=Reject=] |result| with options.[=signal=]'s <a data-cite="!dom#abortsignal-abort-reason">abort reason</a>.</li>
                     </ol>
                   </li>
                 </ol>
