@@ -124,6 +124,8 @@
                 <ol>
                     <li>Let |colorSelectionResult| be the result of the user succesfully selecting a color. If this fails, then:
                       <ol>
+                        <li>If the "eyedropper mode" established by this invocation is still
+                        active, exit that mode and dismiss its UI.</li>
                         <li>
                           If the user aborts the selection, [=reject=] |result| with an "{{AbortError}}" {{DOMException}}, otherwise
                           [=reject=] |result| with an "{{OperationError}}" {{DOMException}}.
